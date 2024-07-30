@@ -1356,6 +1356,14 @@ void commands_process_packet(unsigned char *data, unsigned int len,
 		if (packet_id == COMM_LISP_READ_CODE) {
 			qmlui_data = flash_helper_code_data(CODE_IND_LISP);
 			qmlui_len = flash_helper_code_size(CODE_IND_LISP);
+
+			// Disallow reading more than the first line of LISP code
+			for (int32_t i = 0; i < qmlui_len; ++i) {
+				if (qmlui_data[i] == '\n') {
+					qmlui_len = i + 1;
+					break;
+				}
+			}
 		}
 
 		if (!qmlui_data) {
